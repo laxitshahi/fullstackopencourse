@@ -1,0 +1,78 @@
+State Components
+CODE
+
+// *START OF PAGE RERENDERING
+const App = () => {
+  const [counter, setcounter] = useState(0) //destructing assignment
+
+
+setTimeout(
+  () => setcounter(counter + 1), //parameters of setTimeout is a  fuction and a timeout(1000 = 1s)
+  1000   //first parameter invoked 1s after calling setTimeout
+)
+
+// console.log('rendering...', counter) for debugging
+return (
+  <div>{counter}</div>
+)
+
+}
+
+//*END of page RE-Rendering 
+
+
+1. File imports useState function
+
+2. Function body (app) that defines component starts with a function call
+	const [ counter, setCounter ] = useState(0)
+	//counter is assigned to initial value of state (which is 0)
+	//setCounter is assigned to a function that is going to used to modify the state
+
+//This function call adds a "state" to the component so that it can change during it's life cycle (dynamic)
+
+
+
+3. The setTimeout function is then called, which passes two parameters
+	*setTimeout( () => setCounter(counter + 1), 1000)
+		1. a setCounter() function
+		2. a timeout of one second (1000 = 1s) 
+//The first parameter is called based on the second parameter  (1s after setTimeout is called, setCounter() is called
+// When setCounter(), a state modifying fuction, is called --> React RE-RENDERS the component app
+// --> The re-render, re-executes the body of the component again
+
+4. After the re-excution of the app component the setTimeout() function is called again, aka component function
+
+5. The component function called the useState function first and returns the new value of the state: 1
+
+6. The re-executing of the function body makes the new function call to setTimeout(), once again execuing
+   the 1s timeout and incrementing the counter state again
+
+7. Incrementing the counter by one is essentially the same as:
+	() => setCounter(2)
+
+8. While this happens the old value of counter:1, is rendered to the screen
+
+
+Closing
+- setCounter() modifies the state, it causes te component to re-rende.
+- The value is incremeneted again, and the steps will repeat until the program is stopped
+
+
+
+if you believe that the render is occurig at the wrong time then debug using console
+
+*debug*
+const App = () => {
+  const [ counter, setCounter ] = useState(0)
+
+  setTimeout(
+    () => setCounter(counter + 1),
+    1000
+  )
+
+  console.log('rendering...', counter)***DEBUGGING
+
+  return (
+    <div>{counter}</div>
+  )
+}
