@@ -2,22 +2,22 @@ import React, { useState } from 'react'
 const DisplayBold = ({text}) => {
   return (
     <div>
-      <strong>{text}</strong>
+      <center> <strong>{text}</strong> </center>
     </div>
   )
 }
-const Display = ({text}) =>{
+const Display = ({text,heading}) =>{
   return (
     <div>
-      {text}
+      <center>{heading} {text} </center>
     </div>
   )
 }
 const Button = ({handleClick, text}) =>{
   return (
-      <button onClick ={handleClick}>
-       {text}
-      </button>
+    <center><button onClick ={handleClick}>
+        {text} 
+      </button> </center>
   )
 }
 const App = () => {
@@ -47,16 +47,16 @@ const App = () => {
 
   return (
     <div>
-       <p><DisplayBold text = 'Anecdote with the most votes'/>
-        <Display text = {anecdotes[votes.indexOf(Math.max(...votes))]}/>
-      </p>
+      <DisplayBold text = 'Anecdote with the most votes'/>
+      <Display text = {anecdotes[votes.indexOf(Math.max(...votes))]}/>
+      <Display text = '--------------------------------------------'/>
       <DisplayBold text = 'Current Anecdote'/>
       <Display text = {anecdotes[selected]}/>
       <Button handleClick = {vote} text = 'vote'/>
       <Button handleClick = {setAnecdote} text = 'next'/>
-          <p> <DisplayBold text = 'Votes'/> </p>
-          <p> Current: {votes[selected]} </p>
-          <p> Most Votes: {(Math.max(...votes))} </p>
+          <DisplayBold text = 'Votes'/> 
+          <Display heading = 'Current:' text = {votes[selected]}/>
+          <Display heading = 'Most Votes:' text = {Math.max(...votes)}/>
     </div>
   )
 }
