@@ -1,87 +1,70 @@
 import { useEffect, useState} from 'react'
 import axios from 'axios'
 import ShowData from './components/ShowData'
-import DataToShow from './components/DataToShow'
+// import DataToShow from './components/DataToShow'
 
 const App = () =>{
-const [ data, setData ] = useState([])
-const [ newSearch, setNewSearch ] = useState('') //Why do I need '' to make the component controlled
-const [ buttonData, setButtonData]  = useState([])
-// const [ weatherData, setWeatherData ] = useState(null)
+const [ data, setData ] = useState([]);
+const [ country, setCountry ] = useState('')//Why do I need '' to make the component controlled
+const [ search, setSearch ] = useState(''); 
+const [ weatherData, setWeatherData ] = useState([])
 
 
-useEffect(() => { 
-  axios
+let dataToShow =  data.filter(d=> d.name.toLowerCase().includes(search.toLowerCase()))
+
+
+useEffect(() => {  //everything outside effects run first 
+  if (dataToShow.length === 1){
+    setCountry(dataToShow[0].name)
+  }
+  else{
+    axios
     .get('https://restcountries.eu/rest/v2/all')
     .then(response => {
       setData(response.data)
     })
+  }
+    
+}, [search])
 
-}, [])
 /* useEffect takes two parameters
   1. The effect that is occuring
   2. The varible(s) inside the array, when changed, causes the effect to occur (runs the code inside useEffect)
 */
 
 
+useEffect(() =>{
+  const access_key = process.env.REACT_APP_API_KEY;
+  const filter = data.filter(d => d.name.toLowerCase().includes(country.toLowerCase()))
+  if(country !== ''){
+    axios
+    .get(`http://api.weatherstack.com/current?access_key=${access_key}&query=${filter[0].name}`)
+    .then(response => {
+        setWeatherData(response.data)
 
-const dataToShow = data.filter(data => data.name.toLowerCase().includes(newSearch.toLowerCase()))
-
-// useEffect(() =>{
-//   const access_key = process.env.REACT_APP_API_KEY;
-//      axios
-//     .get(`http://api.weatherstack.com/current?access_key=${access_key}&query=${dataToShow[0].capital}`)
-//     .then(response => {
-//         setWeatherData(response.data)
-
-//     })
-// },[data])
-
-
-
-
-// console.log('button data ', buttonData)
-// console.log('button data length', buttonData.length)
-// console.log('data to show',dataToShow)
-// if(buttonData.length === 1){
-//   console.log('data captial button', buttonData[0].capital)
-// }
-// if(dataToShow.length === 1){
-//   console.log('data capital toShow', dataToShow[0].capital)
-// }
-
-// console.log('data to show length', dataToShow.length)
-// console.log('weather data',weatherData)
-
+    })
+  }
+},[country])
 
 
 const handleClick = (event) => {
-  event.preventDefault();
-  const d = data.filter(data => data.name.toLowerCase().includes(event.target.value.toLowerCase()))
-  setButtonData(d)
+  setSearch(event.target.value)
+  setCountry(event.target.value)
 }
+
 
 const handleSearch = (event) => {
-  setNewSearch(event.target.value); 
-  setButtonData([]);
+  setSearch(event.target.value);
 }
-
 
 return (
   <>
   <div>
-  <h2>find countries: </h2>
-    find countries: <input value = {newSearch} onChange = {handleSearch}/>
+  <h2>Countries</h2>
+    Search: <input value = {search} onChange = {handleSearch}/>
   </div>
   <div>
-    {/* {dataToShow.length === 1 ?  
-    <ShowData data = {dataToShow} handleClick = {handleClick} weather ={weatherData}/> : 
-    <ShowData data = {dataToShow} handleClick = {handleClick}/>} */}
-    <ShowData data = {dataToShow} handleClick = {handleClick}/>
-
-    {/* {buttonData.length === 1 ? <DataToShow data = {buttonData} weather = {weatherData}/>:
-    <DataToShow data = {buttonData}/>} */}
-     <DataToShow data = {buttonData}/>
+  <ShowData weather = {weatherData} searchBox = {search} dataToShow = {dataToShow} handleClick = {handleClick}/>
   </div>     
 </>
 
