@@ -1,11 +1,26 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect } from 'react'
+import axios from 'axios'
 import Note from './components/Note'
 
 //Control Component method to access the data contained in the form's input element
-const App = (props) => {
-  const [notes, setNotes] = useState(props.notes);
+const App = () => {
+  const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('');
   const [showAll, setShowAll] = useState(true);
+
+const hook = () => { // At first, 0 notes are rendered. Thereafter, the function inside useEffect is run 
+    console.log('effect')
+    axios
+      .get("http://localhost:3001/notes")
+      .then(response => {
+        console.log('promise fulfilled')
+        setNotes(response.data)
+      })
+    }
+  // console.log('render', notes.length, 'notes')
+   useEffect(hook, []) 
+   // first parameter in useEffect is used to determine the effect
+   // the second parameter in useEffect is used to determine how often the effect is run
 
   const addNote = (event) => {
     event.preventDefault(); // prevents default actions, such as a page reload

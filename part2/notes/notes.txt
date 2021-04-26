@@ -1,0 +1,28 @@
+1. Always run npm commands where the package.json file is (root directory)
+2. To enable auto refresh on index.js changes, create a .env file with "FAST_REFRESH=false" in it (no quotes)
+
+
+
+
+Promises
+- Axios' method get returns a promise
+
+A Promise is an object representing the eventual completion or failure of an asynchronous operation.
+
+- Promises can have 3 different states:
+1. The promise is pending: It means that the final value (one of the following two) is not available yet.
+
+2. The promise is fulfilled: It means that the operation has completed and the final value is available, 
+   which generally is a successful operation. This state is sometimes also called resolved.
+
+3. The promise is rejected: It means that an error prevented the final value from being determined, 
+   which generally represents a failed operation.
+
+
+Effect Hooks
+Lets you:
+    The Effect Hook lets you perform side effects in function components. 
+    Data fetching, setting up a subscription, and manually changing the DOM 
+    in React components are all examples of side effects.
+
+This makes it perfect for data fetching
