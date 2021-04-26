@@ -1,22 +1,34 @@
 import React from 'react'
 import DataToShow from './DataToShow'
-const ShowData = ({data, handleClick, weather}) => {
-    if( data.length > 10){
+const ShowData = ({weather, searchBox, dataToShow, handleClick }) => {
+    if (dataToShow.length === 0 ){
         return(
-            <p>
-            Too many matches, specify another filter
-            </p>
+        <p>please input a country (no spaces)</p>
         )
     }
-    else if(data.length === 1){
-        return(
-            <DataToShow data = {data} weather = {weather}/> 
+    else if( dataToShow.length > 10){
+        if(searchBox === ''){
+            return (
+                <p> please input a country (no spaces) </p>
+            )
+        }
+        else{
+            return(
+                <p>
+                Too many matches, specify another filter
+                </p>
+            )
+        }
+       
+    }
+    else if(dataToShow.length === 1){
+        return (
+            <DataToShow data = {dataToShow} weather = {weather}/>
         )
-        
     }
     else {
        return(
-            data.map(data =>
+            dataToShow.map(data =>
             <p key = {data.name}>
             {data.name} <button value = {data.name} onClick = {handleClick}> show </button>
             </p>)
