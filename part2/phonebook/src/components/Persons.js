@@ -1,10 +1,10 @@
 import React from 'react'
 
-const Persons = ({person}) =>{
+const Persons = ({person, handleClick}) =>{
     return (
       person.map(person =>
         <p key = {person.name}>
-         {person.name} {person.number}
+         {person.name} {person.number} <button value = {person.id} onClick = {handleClick}> delete </button>
         </p>
          )
     )

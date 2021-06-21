@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+// import axios from 'axios'
+import pbService from './services/persons'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
-// WHEN USED COMPONENT DISPLAYS NOTHING
+import Notification from './components/Notifications'
+
 
 
 
@@ -13,16 +15,25 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ newSearch, setNewSearch] = useState('')
+  const [ message, setMessage] = useState()
+  // useEffect(() => {
+  //   console.log('effect')
+  //   axios
+  //     .get('http://localhost:3001/persons')
+  //     .then(response => {
+  //       console.log('promise fulfilled')
+  //       setPersons(response.data)
+  //     })
+  // }, [])
 
   useEffect(() => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
-      })
-  }, [])
+    pbService
+    .getAll()
+    .then(initalPersons =>{
+      setPersons(initalPersons)
+    }) 
+  },[])
+ 
   
   const addName = (event) => {
     event.preventDefault();
@@ -31,14 +42,47 @@ const App = () => {
       number: newNumber
     }
     console.log('personObject = ', personObject)
-   if (persons.some(person => person.name === personObject.name)){
-    window.alert( `${newName} is already added to phonebook`)
+   if (persons.some(person => person.name.toLowerCase() === personObject.name.toLowerCase())){
+    const currentPerson = persons.find(person => person.name.toLowerCase() === personObject.name.toLowerCase());
+    const result = window.confirm(`${newName} is already added to phonebook, replace old number with new one?`)
+    if(result === true){
+      console.log(currentPerson);
+      pbService
+        .update(currentPerson.id, personObject)
+        .then(returnedPerson => {
+          setPersons(persons.map(person => person.id !== currentPerson.id ? person : returnedPerson))
+        })
+        .catch(error => {
+          setMessage(`${currentPerson.name} has already been deleted from the server bucko`)
+          setTimeout(() => {
+            setMessage(null)
+          },3000)
+          setPersons(persons.filter(n => n.id !== currentPerson.id))
+        })
+      setMessage(`Updated ${currentPerson.name}'s information.`)
+       setTimeout(() => {
+         setMessage(null)
+       },3000)
+    }
+    else{
+      window.alert('Number not updated')
+    } 
    }
    else{
     setPersons(persons.concat(personObject));
-    setNewName('');
-    setNewNumber('');
-   }
+    pbService
+    .create(personObject)
+     .then(returnedPerson => {
+       setPersons(persons.concat(returnedPerson))
+       setMessage(`Added ${returnedPerson.name} to phone book :)`)
+       setTimeout(() => {
+         setMessage(null)
+       },3000)
+     })
+   }  
+   setNewName('')
+   setNewNumber('')
+ 
   }
 
   const handleNameChange = (event) => {
@@ -51,6 +95,22 @@ const App = () => {
     setNewNumber(event.target.value);
   }
 
+  const handleDelete = (event) => {
+    event.preventDefault();
+    const currentId = event.target.value
+    console.log(event.target.value)
+    const currentPerson = persons.find(p => p.id == event.target.value)
+    const changedPersons = persons.filter(p => p.id != event.target.value)  // == instead of === since the types are not the same
+    const result = window.confirm(`Delete ${currentPerson.name}?`)
+    console.log(result)
+    if(result === true){
+      //delete the person and number from the phone book
+      pbService
+        .removeData (currentId)
+          .then(setPersons(changedPersons))
+    }
+  }
+
   // const handleNameSearch = (event) => {
   //   console.log(event.target.value);
   //   setNewSearch(event.target.value)
@@ -61,6 +121,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message = {message}/>
       <Filter val = {newSearch} handleChange = {(event) => setNewSearch(event.target.value)}/>
       <h2>Add a new number</h2>
       <PersonForm addName = {addName} 
@@ -68,7 +129,7 @@ const App = () => {
       newNumber = {newNumber} handleNumberChange = {handleNumberChange}/>
       <h2>Numbers</h2>
       <div> 
-      <Persons person = {personsToShow}/>
+      <Persons person = {personsToShow} handleClick = {handleDelete}/>
       </div>
     </div>
   )

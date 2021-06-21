@@ -48,6 +48,7 @@ useEffect(() =>{
 
 
 const handleClick = (event) => {
+  console.log(event.target)
   setSearch(event.target.value)
   setCountry(event.target.value)
 }
