@@ -97,17 +97,19 @@ const App = () => {
 
   const handleDelete = (event) => {
     event.preventDefault();
-    const currentId = event.target.value
-    console.log(event.target.value)
-    const currentPerson = persons.find(p => p.id == event.target.value)
-    const changedPersons = persons.filter(p => p.id != event.target.value)  // == instead of === since the types are not the same
+    const currentId = Number(event.target.value)
+    const currentPerson = persons.find(p => p.id === currentId)
+    const changedPersons = persons.filter(p => p.id !== currentId)  // == instead of === since the types are not the same
     const result = window.confirm(`Delete ${currentPerson.name}?`)
-    console.log(result)
     if(result === true){
       //delete the person and number from the phone book
       pbService
         .removeData (currentId)
           .then(setPersons(changedPersons))
+      setMessage(`Deleted ${currentPerson.name} from phonebook.`)
+      setTimeout(() => {
+        setMessage(null)
+      },3500)
     }
   }
 
