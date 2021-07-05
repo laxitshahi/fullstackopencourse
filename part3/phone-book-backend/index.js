@@ -73,12 +73,7 @@ const generateID = () => {
 app.post('/api/persons', (request, response) => {
     const body = request.body 
     // console.log(body)
-    const person = {
-        name: body.name,
-        number: body.number,
-        id: generateID()
-    }
-
+  
     if(!body.name || !body.number){
         return response.status(400).json({
             error:'content missng'
@@ -89,10 +84,14 @@ app.post('/api/persons', (request, response) => {
             error: `The name '${body.name}' is already in the phonebook`
         })
     }
-    else {
-    persons = persons.concat(person)
-
-    response.json(persons)
+    else {  
+        const person = {
+            name: body.name,
+            number: body.number,
+            id: generateID()
+        }
+        persons = persons.concat(person)
+        response.json(persons)
     }
    
 })
