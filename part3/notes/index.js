@@ -6,10 +6,12 @@ const express = require('express') //function which creates express app
 const app = express()
 const cors = require('cors')
 
+app.use(express.static('build'))
+app.use(cors())
 app.use(express.json())//allows the use of the json-parser
 //body would be unindentified w/o it
 
-app.use(cors())
+
 
 //Personal middleware implementation
 const requestLogger = (request, response, next) => {
