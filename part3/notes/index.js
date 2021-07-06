@@ -4,10 +4,12 @@
 //same as "import express from express" syntax*
 const express = require('express') //function which creates express app
 const app = express()
+const cors = require('cors')
 
 app.use(express.json())//allows the use of the json-parser
 //body would be unindentified w/o it
 
+app.use(cors())
 
 //Personal middleware implementation
 const requestLogger = (request, response, next) => {
@@ -113,7 +115,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)// "listen" to any requests made to PORT (3001 in this case)
 }) 
